@@ -1,1 +1,26 @@
+========== PART IV-A: Latency Measurement ==========
 
+[Instance A (us-central1)] POST /register — avg latency: 48.60ms (samples: 90, 45, 43, 45, 45, 44, 43, 46, 43, 42ms)
+[Instance B (europe-west1)] POST /register — avg latency: 306.20ms (samples: 504, 312, 225, 377, 222, 376, 222, 301, 233, 290ms)
+[Instance A (us-central1)] GET /list — avg latency: 43.20ms (samples: 80, 41, 37, 42, 39, 40, 38, 39, 39, 37ms)
+[Instance B (europe-west1)] GET /list — avg latency: 277.80ms (samples: 225, 310, 222, 304, 224, 386, 220, 285, 300, 302ms)
+
+========== PART IV-B: Eventual Consistency ==========
+
+Running 100 iterations: register on A, immediately list on B
+
+  Iteration 10/100 — not-found so far: 10
+  Iteration 20/100 — not-found so far: 20
+  Iteration 30/100 — not-found so far: 30
+  Iteration 40/100 — not-found so far: 40
+  Iteration 50/100 — not-found so far: 50
+  Iteration 60/100 — not-found so far: 60
+  Iteration 70/100 — not-found so far: 70
+  Iteration 80/100 — not-found so far: 80
+  Iteration 90/100 — not-found so far: 90
+  Iteration 100/100 — not-found so far: 100
+
+Results: username NOT found immediately in 100/100 iterations
+Consistency rate: 0.0%
+
+Done! 
