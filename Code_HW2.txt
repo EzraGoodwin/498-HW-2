@@ -1,1 +1,22 @@
+My analysis script is written in Node.js and uses
+only the built-in http module.
 
+Latency Measurement
+The script defines a helper function httpRequest() that wraps
+Node's http.request() in a Promise and records the time in
+milliseconds before and after each request using Date.now(). For
+each instance and each endpoint,
+the script sends 10 sequential requests with
+a 200ms delay between them to avoid overwhelming the server. For
+/register requests, a unique username is generated each time using
+Date.now() and the loop index. The latency of each request is
+recorded and the average is calculated and printed at the end.
+
+Eventual Consistency
+The script loops 100 times. In each iteration, it generates a
+unique timestamped username, sends a POST request to Instance A's
+/register endpoint, then immediately sends a GET
+request to Instance B's /list endpoint. It checks
+whether the newly registered username appears in the returned list.
+A counter tracks how many times the username was absent, and the
+final count and consistency rate are printed at the end.
