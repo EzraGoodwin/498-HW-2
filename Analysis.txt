@@ -1,26 +1,42 @@
+Clearing databases before tests...
+
 ========== PART IV-A: Latency Measurement ==========
 
-[Instance A (us-central1)] POST /register — avg latency: 48.60ms (samples: 90, 45, 43, 45, 45, 44, 43, 46, 43, 42ms)
-[Instance B (europe-west1)] POST /register — avg latency: 306.20ms (samples: 504, 312, 225, 377, 222, 376, 222, 301, 233, 290ms)
-[Instance A (us-central1)] GET /list — avg latency: 43.20ms (samples: 80, 41, 37, 42, 39, 40, 38, 39, 39, 37ms)
-[Instance B (europe-west1)] GET /list — avg latency: 277.80ms (samples: 225, 310, 222, 304, 224, 386, 220, 285, 300, 302ms)
+[Instance A (us-central1)] POST /register — avg latency: 67.00ms (samples: 73, 72, 72, 67, 60, 79, 65, 63, 57, 62ms)
+[Instance B (europe-west1)] POST /register — avg latency: 287.30ms (samples: 350, 324, 248, 291, 280, 250, 312, 255, 284, 279ms)
+[Instance A (us-central1)] GET /list — avg latency: 61.10ms (samples: 95, 52, 65, 47, 49, 70, 64, 60, 52, 57ms)
+[Instance B (europe-west1)] GET /list — avg latency: 235.60ms (samples: 247, 239, 230, 227, 251, 235, 227, 235, 234, 231ms)
 
 ========== PART IV-B: Eventual Consistency ==========
 
 Running 100 iterations: register on A, immediately list on B
 
-  Iteration 10/100 — not-found so far: 10
-  Iteration 20/100 — not-found so far: 20
-  Iteration 30/100 — not-found so far: 30
-  Iteration 40/100 — not-found so far: 40
-  Iteration 50/100 — not-found so far: 50
-  Iteration 60/100 — not-found so far: 60
-  Iteration 70/100 — not-found so far: 70
-  Iteration 80/100 — not-found so far: 80
-  Iteration 90/100 — not-found so far: 90
-  Iteration 100/100 — not-found so far: 100
+  Iteration 10/100 — not-found so far: 0
+  Iteration 20/100 — not-found so far: 0
+  Iteration 30/100 — not-found so far: 0
+  Iteration 40/100 — not-found so far: 0
+  Iteration 50/100 — not-found so far: 0
+  Iteration 60/100 — not-found so far: 0
+  Iteration 70/100 — not-found so far: 0
+  Iteration 80/100 — not-found so far: 0
+  Iteration 90/100 — not-found so far: 0
+  Iteration 100/100 — not-found so far: 0
 
-Results: username NOT found immediately in 100/100 iterations
-Consistency rate: 0.0%
+Results: username NOT found immediately in 0/100 iterations
+Consistency rate: 100.0%
 
-Done! 
+========== Analysis/Discussion ==========
+Instance A had significantly lower latency of 67ms for
+/register and 61.10ms for /list compared to Instance B's latency of
+287.30ms and 235.60ms respectively. This is expected because I am
+located in the US, so requests to the us-central1 instance travel
+a much shorter physical distance than requests to europe-west1.
+Additionally, since the Firestore database is hosted in us-central1,
+Instance B must also cross the Atlantic to read and write data which adds further delay.
+
+My eventual consistency experiment showed 0 out of 100 cases where
+a username registered on Instance A was not immediately visible on
+Instance B. This suggests that in my experiment, Firestore's replication
+lag is smaller than the network round-trip time of our sequential
+requests. By the time my /list query reached Instance B, the data
+had already propagated. This could be because of the slow squential nature of my tests.
